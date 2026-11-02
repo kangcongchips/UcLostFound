@@ -1,7 +1,7 @@
 package com.example.uclostfound
 
+import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.uclostfound.adapter.ItemAdapter
@@ -19,10 +19,15 @@ class HomeActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         adapter = ItemAdapter(SampleData.items) { item ->
-            Toast.makeText(this, item.name, Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, ItemDetailActivity::class.java)
+            intent.putExtra("itemId", item.id)
+            startActivity(intent)
         }
         binding.rvItems.layoutManager = LinearLayoutManager(this)
         binding.rvItems.adapter = adapter
+        binding.fabAdd.setOnClickListener {
+            startActivity(Intent(this, ReportItemActivity::class.java))
+        }
     }
 
     override fun onResume() {
