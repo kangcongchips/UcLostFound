@@ -2,14 +2,11 @@ package com.example.uclostfound.model
 
 data class Claim(
     val id: String = "",
-    val type: String = "",
-    val name: String = "",
-    val category: String = "",
-    val description: String = "",
-    val location: String = "",
-    val dateReported: Long = 0L,
-    val status: String = "LOST",
-    val reporterId: String = "",
-    val reporterName: String = "",
-    val holdingLocation: String = ""
+    val itemId: String = "",
+    val claimantId: String = "",
+    val claimantName: String = "",
+    val proofDescription: String = "",
+    val status: String = "PENDING",
+    val rejectReason: String = "",
+    val dateSubmitted: Long = 0L
 )

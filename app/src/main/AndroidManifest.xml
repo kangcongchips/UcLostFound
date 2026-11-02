@@ -13,13 +13,13 @@
         android:theme="@style/Theme.UcLostFound"
         tools:targetApi="31">
         <activity
-            android:name=".ReportItemActivity"
+            android:name=".MyActivityActivity"
             android:exported="false" />
         <activity
-            android:name=".ItemDetailActivity"
+            android:name=".ClaimReviewActivity"
             android:exported="false" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,7 +28,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".HomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ItemDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ReportItemActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MyActivityActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ClaimReviewActivity"
             android:exported="false" />
     </application>
 

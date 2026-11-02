@@ -1,5 +1,6 @@
 package com.example.uclostfound
 
+import com.example.uclostfound.data.Session
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.View
@@ -111,8 +112,8 @@ class ReportItemActivity : AppCompatActivity() {
             location = location,
             dateReported = selectedDate,
             status = type,
-            reporterId = "u1",
-            reporterName = "You",
+            reporterId = Session.currentUser?.uid ?: "",
+            reporterName = Session.currentUser?.fullName ?: "Unknown",
             holdingLocation = if (isFound) holding else ""
         )
 
