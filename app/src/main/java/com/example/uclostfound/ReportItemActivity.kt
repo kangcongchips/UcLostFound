@@ -59,18 +59,25 @@ class ReportItemActivity : AppCompatActivity() {
         title = "Edit Report"
         binding.btnSubmit.text = "Save changes"
 
-        // The type (Lost or Found) cannot be changed when editing
-        binding.rbLost.isChecked = item.type == "LOST"
-        binding.rbFound.isChecked = item.type == "FOUND"
-        binding.rbLost.isEnabled = false
-        binding.rbFound.isEnabled = false
+        // The buttons show the current status
+        if (item.status == "FOUND") {
+            binding.rbFound.isChecked = true
+        } else {
+            binding.rbLost.isChecked = true
+        }
+
+        // Only Staff can change a Lost report to Found (or back).
+        // Reports that were originally posted as Found stay locked.
+        val canChangeStatus = Session.isStaff() && item.type == "LOST"
+        binding.rbLost.isEnabled = canChangeStatus
+        binding.rbFound.isEnabled = canChangeStatus
 
         binding.etName.setText(item.name)
         binding.spCategory.setSelection(categories.indexOf(item.category).coerceAtLeast(0))
         binding.etLocation.setText(item.location)
         binding.etDescription.setText(item.description)
         binding.etHolding.setText(item.holdingLocation)
-        binding.tilHolding.visibility = if (item.type == "FOUND") View.VISIBLE else View.GONE
+        binding.tilHolding.visibility = if (item.status == "FOUND") View.VISIBLE else View.GONE
         selectedDate = item.dateReported
     }
 
@@ -97,7 +104,7 @@ class ReportItemActivity : AppCompatActivity() {
     }
 
     private fun submit() {
-        val isFound = editingItem?.let { it.type == "FOUND" } ?: binding.rbFound.isChecked
+        val isFound = binding.rbFound.isChecked
         val name = binding.etName.text.toString().trim()
         val location = binding.etLocation.text.toString().trim()
         val description = binding.etDescription.text.toString().trim()
@@ -145,6 +152,15 @@ class ReportItemActivity : AppCompatActivity() {
                 finish()
                 return
             }
+
+            // Only Staff can change the status, and only on reports originally posted as Lost
+            val newStatus =
+                if (Session.isStaff() && latest.type == "LOST") {
+                    if (isFound) "FOUND" else "LOST"
+                } else {
+                    latest.status
+                }
+
             SampleData.updateItem(
                 latest.copy(
                     name = name,
@@ -152,10 +168,14 @@ class ReportItemActivity : AppCompatActivity() {
                     description = description,
                     location = location,
                     dateReported = selectedDate,
-                    holdingLocation = if (isFound) holding else ""
+                    status = newStatus,
+                    holdingLocation = if (newStatus == "FOUND") holding else ""
                 )
             )
-            Toast.makeText(this, "Report updated", Toast.LENGTH_SHORT).show()
+
+            val message =
+                if (newStatus != latest.status) "Item marked as $newStatus" else "Report updated"
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             finish()
             return
         }

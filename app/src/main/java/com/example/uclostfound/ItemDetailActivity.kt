@@ -71,8 +71,9 @@ class ItemDetailActivity : AppCompatActivity() {
 
         // BR-01: only FOUND items can be claimed
         // BR-05: you cannot claim an item you reported yourself
-        val canClaim = item.status == "FOUND" &&
-                item.reporterId != Session.currentUser?.uid
+        val reportedAsFoundByMe =
+            item.type == "FOUND" && item.reporterId == Session.currentUser?.uid
+        val canClaim = item.status == "FOUND" && !reportedAsFoundByMe
         binding.btnClaim.visibility = if (canClaim) View.VISIBLE else View.GONE
         // BR-07: only the owner or Staff can edit, only while LOST or FOUND
         binding.btnEdit.visibility = if (Session.canEdit(item)) View.VISIBLE else View.GONE
