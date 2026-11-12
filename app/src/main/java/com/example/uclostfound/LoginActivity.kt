@@ -6,6 +6,7 @@ import android.util.Patterns
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.uclostfound.data.SampleData
 import com.example.uclostfound.data.Session
 import com.example.uclostfound.databinding.ActivityLoginBinding
 import com.example.uclostfound.model.User
@@ -65,18 +66,26 @@ class LoginActivity : AppCompatActivity() {
 
         if (!valid) return
 
-        // Phase 1 fake login: an email containing "staff" gets the STAFF role
-        val role = if (email.contains("staff", ignoreCase = true)) "STAFF" else "STUDENT"
-        val name = if (registerMode) fullName else email.substringBefore("@")
+        // Phase 1: check against the in-memory accounts list
+        val user: User
+        if (registerMode) {
+            if (SampleData.accounts.containsKey(email.lowercase())) {
+                binding.tilEmail.error = "This email is already registered"
+                return
+            }
+            user = User("u_" + email.lowercase(), fullName, email, "STUDENT")
+            SampleData.accounts[email.lowercase()] = Pair(password, user)
+        } else {
+            val account = SampleData.accounts[email.lowercase()]
+            if (account == null || account.first != password) {
+                binding.tilPassword.error = "Wrong email or password"
+                return
+            }
+            user = account.second
+        }
+        Session.currentUser = user
 
-        Session.currentUser = User(
-            uid = "u_" + email,
-            fullName = name,
-            email = email,
-            role = role
-        )
-
-        Toast.makeText(this, "Logged in as $role", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Logged in as ${user.role}", Toast.LENGTH_SHORT).show()
         startActivity(Intent(this, HomeActivity::class.java))
         finish()
     }

@@ -2,6 +2,7 @@ package com.example.uclostfound.data
 
 import com.example.uclostfound.model.Claim
 import com.example.uclostfound.model.Item
+import com.example.uclostfound.model.User
 
 object SampleData {
     val items = mutableListOf(
@@ -22,6 +23,11 @@ object SampleData {
             rejectReason = "",
             dateSubmitted = 1729800000000
         )
+    )
+
+    val accounts = mutableMapOf(
+        "student@uc.edu" to Pair("123456", User("u_student@uc.edu", "Student", "student@uc.edu", "STUDENT")),
+        "staff@uc.edu" to Pair("123456", User("u_staff@uc.edu", "Staff", "staff@uc.edu", "STAFF"))
     )
 
     fun updateItemStatus(itemId: String, status: String) {
